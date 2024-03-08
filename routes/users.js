@@ -4,7 +4,7 @@ const User = require("./../models/user")
 
 //update a user
 router.put("/:id", async (req, res) => {
-    if (req.body.userId === req.params.id || req.user.isAdmin) {
+    if (req.body.userId === req.params.id || req.body.isAdmin) {
         if (req.body.password) {
             try {
                 const salt = await bcrypt.genSalt(10);
@@ -14,15 +14,31 @@ router.put("/:id", async (req, res) => {
             }
             try {
                 const user = await User.findByIdAndUpdate(req.params.id, { $set: req.body });
-                res.status(200).json("Account has been updated")
+                res.status(200).json("Account has been updated");
+                console.log(user)
             } catch (err) {
                 return res.status(500).json(err);
             }
-        } else {
-            res.status(403).json("You can update your account only!");
         }
+    } else {
+        return res.status(403).json("You can only update your account!")
     }
 });
 //delete a user
+
+router.delete("/:id", async(req, res) => {
+    // console.log(req.body)
+    // console.log(req.params.id)
+    if(req.body.userId === req.params.id || req.body.isAdmin){
+      try {
+        await User.findByIdAndDelete(req.body.userId)
+        res.status(200).json("User successfuly deleted")
+      } catch (error) {
+        return res.status(500).json(error)
+      } 
+    } else {
+        return res.status(403).json("You can only delete your account!")
+    }
+})
 //follow a user
 module.exports = router;
