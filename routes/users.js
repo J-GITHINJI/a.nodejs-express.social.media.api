@@ -27,8 +27,6 @@ router.put("/:id", async (req, res) => {
 //delete a user
 
 router.delete("/:id", async(req, res) => {
-    // console.log(req.body)
-    // console.log(req.params.id)
     if(req.body.userId === req.params.id || req.body.isAdmin){
       try {
         await User.findByIdAndDelete(req.body.userId)
